@@ -1,0 +1,60 @@
+{% extends 'accounts/main.html'%}
+
+{%block content%}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="container">
+      <div class="form-group mx-sm-6 mb-2">
+        <hr >
+          {{ form }}
+      </div>
+    </div>
+
+    <br>
+
+    {% if alert_flag %}
+      <script>alert("Incorrect Input : Check your input")</script>
+    {% endif %}
+
+
+
+<div class="row">
+	<div class="col">
+		<div class="col-md">
+      <div class="form-group mx-sm-6 mb-5">
+        <button type="submit" class="btn btn-primary mb-3" style="width:100px;margin:0 20%;position:relative;left:-50px;">Ask</button>
+        <!-- <button type="clear" class="btn btn-primary mb-3">Clear</button> -->
+           <div class="card text-center text-white  mb-5" id="total-orders" >
+			  	       <div class="card-header">
+			  		            <h5 class="card-title">Response</h5>
+			  	       </div>
+			  	       <div class="card-body">
+			    	           <h3 class="card-title">{{converted}}</h3>
+			  	       </div>
+           </div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+
+<div class="col-md-3">
+  <h5>Intent Types</h5>
+  <hr>
+  <div class="card card-body">
+    <table class="table table-sm">
+      <tr>
+        <th>Intent Name</th>
+      </tr>
+      {%for i in intents%}
+        <tr>
+        <td><a class='btn btn-sm btn-info' href="{%url 'askintent' i %}">{{i}}</a></td>
+        </tr>
+      {%endfor%}
+    </table>
+  </div>
+</div>
+
+
+{%endblock%}
