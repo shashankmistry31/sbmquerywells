@@ -22,7 +22,7 @@ def home(request):
             db_type = 2
             if db_input :
                 #Christian AWS account url
-                url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key="+db_session_key+"&db_input="+db_input+"&db_type=12"
+                url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key="+db_session_key+"&db_input="+db_input+"&db_type=12"
                 #Shashank AWS account url
                 #url = "https://7q539nw8rl.execute-api.ap-southeast-1.amazonaws.com/default/dynamodb_update?session_key="+db_session_key+"&db_input="+db_input+"&db_type=2"
                 print(url)
@@ -51,7 +51,7 @@ def home(request):
     else:
         db_session_key= request.session.session_key
         #Christian URL
-        url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key="+db_session_key+"&db_input=NULL&db_type=11"
+        url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key="+db_session_key+"&db_input=NULL&db_type=11"
         #mistry url
         #url = "https://7q539nw8rl.execute-api.ap-southeast-1.amazonaws.com/default/dynamodb_update?session_key="+db_session_key+"&db_input=NULL&db_type=1"
         print(url)
@@ -75,7 +75,7 @@ def d2b(request):
             db_session_key= request.session.session_key
             db_input = form.cleaned_data['decimal_data']
             #Christian url
-            url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key="+db_session_key+"&db_input="+db_input+"&db_type=14"
+            url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key="+db_session_key+"&db_input="+db_input+"&db_type=14"
             #Shashank Url
             #url = "https://7q539nw8rl.execute-api.ap-southeast-1.amazonaws.com/default/dynamodb_update?session_key="+db_session_key+"&db_input="+db_input+"&db_type=4"
             response = requests.get(url)
@@ -98,7 +98,7 @@ def d2b(request):
     else:
         db_session_key= request.session.session_key
         #Christian url
-        url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key="+db_session_key+"&db_input=NULL&db_type=13"
+        url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key="+db_session_key+"&db_input=NULL&db_type=13"
         #Shashank url
         #url = "https://7q539nw8rl.execute-api.ap-southeast-1.amazonaws.com/default/dynamodb_update?session_key="+db_session_key+"&db_input=NULL&db_type=4"
         response = requests.get(url)
@@ -113,7 +113,7 @@ def askintent(request,pk):
     #Shashank AWS url
     #url = 'https://bzchkm42h7.execute-api.ap-southeast-1.amazonaws.com/default/intent_conclusion_statement?intent='+pk
     #Christian AWS url
-    url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key="+db_session_key+"&db_input="+ pk +"&db_type=15&bank=main"
+    url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key="+db_session_key+"&db_input="+ pk +"&db_type=15&bank=main"
     response = requests.get(url)
     print(response)
     return HttpResponse(response.json()['fixed_response'])

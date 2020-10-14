@@ -3,7 +3,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Query Demo - Main </title>
+    <title>Query Demo - Wells </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -69,11 +69,11 @@
 $(function() {
 
     var response;
-    var uuid;
+    var uuid ,session_uuid;
     var session_data = 'NULL'
     // const proxyurl = "https://rocky-lake-46801.herokuapp.com/";
     // sessionID = "cvbrrrm253fnx5j77n496ta9a48emuxb";
-    var url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key=" + session_data + "&db_input=NULL&db_type=111";
+    var url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key=" + session_data + "&db_input=NULL&db_type=1111";
     // const url = "https://api.silverscraper.com/hsbc/dynamodb_update?db_type=1&db_input=NULL&session_key=" + session_data;
     // console.log('reached');
 
@@ -101,7 +101,10 @@ $(function() {
       }
     console.log('Getting the cookie');
     var uuid = getCookie('ppkcookie');
-// put the condition here
+
+    // logic for the session cookie and permenant cookie
+    var session_uuid = getCookie('aiibcookie');
+
     if (uuid ==  null) {
     // console.log(x);
     console.log('Cookie not found');
@@ -110,17 +113,21 @@ $(function() {
     }).then(function(data) {
     // console.log(data);
     uuid = data.uuid_string;
-    console.log('Got the UUID from Lambda:')
-    console.log(uuid)
-    var json_str = setCookie('ppkcookie',uuid,1);
+    session_uuid   = data.session_uuid;
+    console.log('Got the permenant UUID and session uuidd from Lambda:')
+    console.log(uuid,session_uuid)
+    var json_str = setCookie('ppkcookie',uuid,365);
+    var json_str = setCookie('aiibcookie',session_uuid);
     // const obj = JSON.parse(data);
     }).catch(function() {
     console.log("Error in fetching the uuid response");
     });
-  } else {
-    console.log('Cookie Found')
-    session_data =uuid
-    url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key=" + session_data + "&db_input=NULL&db_type=111";
+    }
+    else if (uuid != null && session_uuid !=null) {
+    console.log('Both Cookie Found')
+    session_data = session_uuid + uuid
+    console.log(session_data)
+    url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key=" + session_data + "&db_input=NULL&db_type=1112";
     fetch(url).then(function(response) {
     return response.json();
     }).then(function(data) {
@@ -133,7 +140,69 @@ $(function() {
     console.log("Error in fetching the uuid response");
     });
 
+    }
+    else if (uuid != null && session_uuid ==null){
+    console.log('session cookie not  found')
+    console.log(uuid)
+    session_data = uuid
+    url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key=" + session_data + "&db_input=NULL&db_type=1113";
+    fetch(url).then(function(response) {
+    return response.json();
+    }).then(function(data) {
+      console.log('url fetched');
+      session_uuid   = data.temp_session_id;
+      console.log('setting temp cookie');
+      var json_str = setCookie('aiibcookie',session_uuid);
+      console.log('finished');
+    // console.log(data);
+    // uuid = data.uuid_string;
+    // if  (data.db_insert == "Success"){console.log('Logged into Dynamo DB')}
+    // var json_str = setCookie('ppkcookie',uuid,1);
+    // const obj = JSON.parse(data);
+    }).
+    catch(function() {
+    console.log("Error in fetching the uuid response");
+    });
+
+
   }
+
+//  new logic ends here
+
+
+// put the condition here
+  //   if (uuid ==  null) {
+  //   // console.log(x);
+  //   console.log('Cookie not found');
+  //   fetch(url).then(function(response) {
+  //   return response.json();
+  //   }).then(function(data) {
+  //   // console.log(data);
+  //   uuid = data.uuid_string;
+  //   console.log('Got the UUID from Lambda:')
+  //   console.log(uuid)
+  //   var json_str = setCookie('ppkcookie',uuid);
+  //   // const obj = JSON.parse(data);
+  //   }).catch(function() {
+  //   console.log("Error in fetching the uuid response");
+  //   });
+  //   } else {
+  //   console.log('Cookie Found')
+  //   session_data =uuid
+  //   url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key=" + session_data + "&db_input=NULL&db_type=111";
+  //   fetch(url).then(function(response) {
+  //   return response.json();
+  //   }).then(function(data) {
+  //   // console.log(data);
+  //   // uuid = data.uuid_string;
+  //   if  (data.db_insert == "Success"){console.log('Logged into Dynamo DB')}
+  //   // var json_str = setCookie('ppkcookie',uuid,1);
+  //   // const obj = JSON.parse(data);
+  //   }).catch(function() {
+  //   console.log("Error in fetching the uuid response");
+  //   });
+  //
+  // }
 
 
 });
@@ -199,7 +268,7 @@ $(function() {
        var res;
        // const proxyurl = "https://cors-anywhere.herokuapp.com/";
        // sessionID = "cvbrrrm253fnx5j77n496ta9a48emuxb";
-       const url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/processask?session_key=" + uuid + "&db_input=" + msg + "&db_type=114";
+       const url = "https://t41v93n5u5.execute-api.eu-west-2.amazonaws.com/prod/wells?session_key=" + uuid + "&db_input=" + msg + "&db_type=114";
        console.log('Getting the response');
        fetch(url) // https://cors-anywhere.herokuapp.com/https://example.com
            .then(response => response.text())
